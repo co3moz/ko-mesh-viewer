@@ -25,35 +25,21 @@ window.addEventListener('resize', function () {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 
-
-
-function animate() {
-  requestAnimationFrame(animate);
-
-
-  renderer.render(scene, camera);
-}
-
-animate();
-
-
-
-let last = null;
-function addObject(vert, ind) {
-  if (last) {
-    scene.remove(last);
-    last = null;
+let _last = null;
+function addObject(vertices, faces) {
+  if (_last) {
+    scene.remove(_last);
+    _last = null;
   }
 
   var geometry = new THREE.Geometry();
 
-  for (let i = 0; i < vert.length; i++) {
-    geometry.vertices.push(new THREE.Vector3(vert[i].x, vert[i].y, vert[i].z));
+  for (let i = 0; i < vertices.length; i++) {
+    geometry.vertices.push(new THREE.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
   }
 
-
-  for (let i = 0; i < ind.length; i += 3) {
-    geometry.faces.push(new THREE.Face3(ind[i], ind[i + 1], ind[i + 2]));
+  for (let i = 0; i < faces.length; i += 3) {
+    geometry.faces.push(new THREE.Face3(faces[i], faces[i + 1], faces[i + 2]));
   }
 
   geometry.computeBoundingSphere();
@@ -66,5 +52,14 @@ function addObject(vert, ind) {
   });
   var cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
-  last = cube;
+  _last = cube;
 }
+
+
+
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+animate();

@@ -17,7 +17,6 @@ function readN3PMesh(data) {
 
   if (verticeMaxCount > 0x8000 || indiceMaxCount > 0x8000) throw new Error('not allowed');
 
-
   const vertices = [];
   for (let i = 0; i < verticeMaxCount; i++) {
     vertices.push({
@@ -35,101 +34,18 @@ function readN3PMesh(data) {
   }
 
 
-  const indices = [];
+  const faces = [];
 
   for (let i = 0; i < indiceMaxCount; i++) {
     const v = data.getUint16(offset, true);
     offset += 2;
 
-    indices.push(v);
-  }
-
-
-  const collapses = [];
-  for (let i = 0; i < collapseCount; i++) {
-    collapses.push({
-      indiceLoseCount: data.getInt32(offset, true),
-      indiceChangeCount: data.getInt32(offset + 4, true),
-      verticeLoseCount: data.getInt32(offset + 8, true),
-      indexChange: data.getInt32(offset + 12, true),
-      collapseTo: data.getInt32(offset + 16, true),
-      shouldCollapse: data.getInt32(offset + 20, true),
-    });
-
-    offset += 24;
-  }
-
-
-  const indexChanges = [];
-
-  for (let i = 0; i < indexChangeCount; i++) {
-    indexChanges.push(data.getInt32(offset, true));
-    offset += 4;
-  }
-
-  const LODCtrlCount = data.getInt32(offset, true);
-  offset += 4;
-
-  const LODCtrls = [];
-
-  for (let i = 0; i < LODCtrlCount; i++) {
-    LODCtrls.push({
-      fDist: data.getFloat32(offset, true),
-      verticeCount: data.getInt32(offset + 4, true)
-    });
-
-    offset += 8;
-  }
-
-  let i = 0;
-  let c = 0;
-  let iVerticeCount = 0;
-  let iIndiceCount = 0;
-
-  while (LODCtrls[i] && LODCtrls[i].verticeCount > iVerticeCount) {
-    if (c >= collapseCount) break;
-    let collapse = collapses[c];
-    if (collapse.verticeLoseCount + iVerticeCount > LODCtrls[i].verticeCount) break;
-
-    iVerticeCount += collapse.verticeLoseCount;
-    iIndiceCount += collapse.indiceLoseCount;
-
-    let min = collapse.indexChange;
-    let max = min + collapse.indiceChangeCount;
-
-    for (let j = min; j < max; j++) {
-      indices[indexChanges[j]] = iVerticeCount - 1;
-    }
-
-    c++;
-  }
-
-  while (c < collapseCount && collapses[c].shouldCollapse) {
-    let collapse = collapses[c];
-
-    iVerticeCount += collapse.verticeLoseCount;
-    iIndiceCount += collapse.indiceLoseCount;
-
-    let min = collapse.indexChange;
-    let max = min + collapse.indiceChangeCount;
-
-    for (let j = min; j < max; j++) {
-      indices[indexChanges[j]] = iVerticeCount - 1;
-    }
-
-    c++;
+    faces.push(v);
   }
 
   return ({
     meshName,
-    count: {
-      collapse: collapseCount,
-      indexChange: indexChangeCount,
-      vertice: { min: verticeMinCount, max: verticeMaxCount },
-      indice: { min: indiceMinCount, max: indiceMaxCount }
-    },
-
     vertices,
-    indices,
+    faces
   })
 }

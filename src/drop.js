@@ -28,7 +28,7 @@ document.body.addEventListener('drop', function (e) {
     if (file.name.endsWith(".n3pmesh")) {
       readAsByte(file, function (data) {
         let mesh = readN3PMesh(data);
-        addObject(mesh.vertices, mesh.indices);
+        addObject(mesh.vertices, mesh.faces);
       });
     } else {
       alert('this file type is not supported. (' + file.name + ')');
