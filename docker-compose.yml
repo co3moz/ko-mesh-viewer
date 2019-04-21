@@ -1,0 +1,12 @@
+version: '3'
+services:
+  ko-mesh:
+    build: .
+    networks:
+      application:
+        ipv4_address: 10.0.0.40
+    restart: always
+networks:
+  application:
+    external:
+      name: application
