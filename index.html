@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Knight Online Mesh Viewer</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%
+    }
+
+    .dropping canvas {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container"></div>
+  <div class="controls"></div>
+  <script src="https://threejs.org/build/three.min.js"></script>
+  <script src="https://threejs.org/examples/js/controls/OrbitControls.js"> </script>
+  <script src="mesh_reader.js"> </script>
+  <script src="scene.js"> </script>
+  <script src="drop.js"> </script>
+</body>
+</html>
